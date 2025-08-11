@@ -25,7 +25,7 @@ function calculatePrice() {
 
     const departure = depEl.value;
     const destination = destEl.value;
-    const passengers = parseInt(passEl.value);
+    const passengers = parseInt(passEl.value, 10) || 1;
 
     if (!departure || !destination || departure === destination) {
         resultDiv.style.display = 'none';
@@ -40,26 +40,12 @@ function calculatePrice() {
     resultDiv.style.display = 'block';
 }
 
-    const route = `${departure}-${destination}`;
-    const reverseRoute = `${destination}-${departure}`;
-    
-    let basePrice = priceRates[route] || priceRates[reverseRoute] || 25;
-    
-    // Passenger multiplier
-    if (passengers > 2) {
-        basePrice *= 1.2;
-    }
-
-    // Round to nearest integer for display
-    priceSpan.textContent = Math.round(basePrice);
-    resultDiv.style.display = 'block';
-}
-
 // Attach events after DOM content is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('departure')) { document.getElementById('departure').addEventListener('change', calculatePrice); }
-    if (document.getElementById('destination')) { document.getElementById('destination').addEventListener('change', calculatePrice); }
-    if (document.getElementById('passengers')) { document.getElementById('passengers').addEventListener('change', calculatePrice); }
+    ['departure', 'destination', 'passengers'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', calculatePrice);
+    });
 
     // Smooth scrolling for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
